@@ -1,0 +1,6 @@
+const express=require('express');const mysql=require('mysql2/promise');const app=express();const PORT=3000;
+const pool=mysql.createPool({host:'localhost',user:'root',password:'',database:'login_backend',waitForConnections:true,connectionLimit:10,queueLimit:0});
+app.use(express.json());app.use(express.static(__dirname));
+app.get('/estado',async(req,res)=>{try{const c=await pool.getConnection();c.release();res.json({estado:'OK',mensaje:'Backend y MySQL están conectados.'})}catch(e){console.error(e);res.status(500).json({estado:'ERROR',mensaje:'No se pudo conectar con MySQL.'})}});
+app.post('/login',async(req,res)=>{const{username,password}=req.body;if(!username||!password)return res.status(400).json({mensaje:'Usuario y contraseña son obligatorios.'});try{const[rows]=await pool.execute('SELECT username FROM usuarios WHERE username = ? AND password = ? LIMIT 1',[username,password]);if(rows.length===1)return res.status(200).json({mensaje:'Inicio de sesión exitoso'});return res.status(401).json({mensaje:'Inicio de sesión fallido. Verifica tus credenciales.'})}catch(e){console.error(e);return res.status(500).json({mensaje:'Error interno del servidor.'})}});
+app.listen(PORT,()=>console.log(`Servidor ejecutándose en http://localhost:${PORT}`));

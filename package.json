@@ -1,0 +1,1 @@
+{"name":"login-backend-uniminuto","version":"1.0.0","description":"Proyecto académico de login con Node.js, Express y MySQL","main":"servidor.js","scripts":{"start":"node servidor.js"},"dependencies":{"express":"^4.21.2","mysql2":"^3.11.5"}}
